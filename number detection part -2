@@ -1,0 +1,29 @@
+import numpy as np
+import cv2
+import pickle
+
+###################
+width = 640
+height = 480
+###################
+
+cap = cv2.VideoCapture(1)
+cap.set(3,width)
+cap.set(4,height)
+
+pickle_in = open("model_trainned.p","rb")
+model = pickle.load(pickle_in)
+
+while ture:
+    success, imgOriginal = cap.read()
+    img = np.asarray(imgOriginal)
+    img = cv2.resize(img,(32,32))
+    img = PreProcessing(img)
+    cv2.imshow("Processed Image",img)
+    img = img.reshape(1,32,32,1)
+    #predict
+    classIndex = int(model.predict_classes(img))
+    print(classIndex)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
